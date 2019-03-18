@@ -1,9 +1,23 @@
-mysql:
-  image: mysql:5.7
-  ports:
-    - "3306:3306"
-  environment:
-    - MYSQL_ROOT_PASSWORD=petclinic
-    - MYSQL_DATABASE=petclinic
-  volumes:
-    - "./conf.d:/etc/mysql/conf.d:ro"
+version: '3'
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=petclinic
+      - MYSQL_DATABASE=petclinic
+    volumes:
+      - ./conf.d:/etc/mysql/conf.d:ro
+      - ./mysql-petclinic:/docker-entrypoint-initdb.d
+
+  app:
+    build: .
+    image: ag04/spring-petclinic:latest
+    ports:
+      - "9090:8080"
+    depends_on:
+      - mysql
+
